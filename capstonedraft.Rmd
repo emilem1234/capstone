@@ -1,0 +1,281 @@
+---
+title: "CKME 136 Capstone2nd"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+
+# Load libraries
+```{r}
+library(dplyr)
+```
+
+# NY_business<- read.csv(file.choose(), header = T, stringsAsFactors = F)
+```{r}
+#importing the file
+NY_business<- read.csv("C:/Users/DeLLuser/Documents/Legally_Operating_Businesses.csv")
+summary(NY_business)
+View(NY_business)
+```
+
+
+```{r}
+sapply(NY_business, class)
+```
+
+
+```{r}
+# exploring my data
+head(NY_business)
+tail(NY_business)
+```
+
+```{r}
+str(NY_business)
+```
+
+```{r}
+summary(NY_business)
+```
+
+```{r}
+dim(NY_business)
+
+```
+
+```{r}
+names(NY_business)
+any(is.na(NY_business))
+colSums(is.na(NY_business))
+summary(NY_business)
+```
+
+
+
+
+```{r}
+# we found 2 similar rows identified duplicate rows
+filter(NY_business,DCA.License.Number=="1374839-DCA")
+filter(NY_business,DCA.License.Number=="2003600-DCA")
+NY_data <- subset(NY_business, !duplicated(NY_business[,1]))
+```
+
+```{r}
+summary(NY_data)
+```
+
+```{r}
+str(NY_data)
+```
+
+```{r}
+#remplacing all blank cells by na
+
+NY_data[NY_data==""]<-NA
+summary(NY_data)
+names(NY_data)
+```
+
+```{r}
+summary(NY_data)
+```
+
+```{r}
+#removing all rows that have more than 40% nas and the Licence expiry date that is not useful information for us
+NY_data1<- NY_data [ , -which(colMeans(is.na(NY_data)) > 0.4 )]
+NY_data1<- NY_data1[ ,-3]
+```
+
+```{r}
+summary(NY_data1)
+```
+
+```{r}
+dim(NY_data1)
+```
+
+```{r}
+#histogram
+attach(NY_business)
+```
+
+```{r}
+plot(License.Type,col="green")
+#plot(License.Expiration.Date)
+#plot(License.Status)
+#plot(License.Creation.Date)
+#plot(Industry)
+plot(Business.Name.2)
+plot(Address.Building)
+plot(Address.Street.Name)
+plot(Secondary.Address.Street.Name)
+#plot(Address.City)
+#plot(Address.State)
+plot(Address.ZIP)
+plot(Contact.Phone.Number)
+#plot(Address.Borough)
+hist(Borough.Code)
+hist(Community.Board)
+hist(BIN)
+#hist(BBL)
+#plot(NTA)
+#plot(Location)
+```
+
+```{r}
+#right skewed
+hist(Council.District)
+hist(Census.Tract)
+```
+
+```{r}
+#left skewed
+#plot(Detail)
+hist(Longitude)
+hist(Latitude)
+```
+
+```{r}
+#others graph with numeric values
+boxplot(Borough.Code ~ License.Status, ylim=c(1,6) )
+```
+
+```{r}
+boxplot(Longitude ~ License.Status, ylim=c(-73.5,-74.5))
+boxplot(Latitude ~ License.Status, ylim=c(40.4,41))
+boxplot(Census.Tract ~ License.Status, ylim=c(0,2500))
+boxplot(Council.District ~ License.Status, ylim=c(0,100))
+boxplot(BIN ~ License.Status)
+boxplot(Community.Board ~ License.Status)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+#dim of removed duplicate
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+#dataframe after having removed columns with nas and useless column
+str(NY_data1)
+summary(NY_data1)
+```
+
+```{r}
+#install.packages("rjava",type = 'source')
+#library(FSelector)
+
+#data(NY_data1)
+
+```
+
+
+```{r}
+#find the weight for each attributes
+#weights<- SOME_FUNCTION(Class~., NY_data1)
+#print(weights)
+```
+
+```{r}
+# We realize that we do have 7 attributes of importance DCA.License.Number,Contact.Phone.Number, Business.Name, #License.Creation.Date, Industry, Address.Building, Address.Street.Name with this method Fselectorrcpp and before having #found any imputing values for the nas
+library(FSelectorRcpp)
+Irisx<-NY_data1[-3]
+y<-NY_data1$License.Status
+information_gain(x=Irisx,y=y)
+```
+
+{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+
+```{r}
+
+```
+
