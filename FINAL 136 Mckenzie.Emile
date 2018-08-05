@@ -1,0 +1,938 @@
+---
+title: "ckme136"
+author: "Mckenzie Emile"
+date: "August 3, 2018"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+## Importing the file to R
+
+
+```{r}
+NY_business<- read.csv("C:/Users/DeLLuser/Documents/Legally_Operating_Businesses.csv", header = T, stringsAsFactors = F)
+
+```
+#reviewing my data 
+```{r}
+str(NY_business)
+```
+
+```{r}
+
+summary(NY_business)
+
+```
+#reviewing the first 6 lines
+```{r}
+
+head(NY_business)
+```
+#reviewing the last 6 lines
+```{r}
+tail(NY_business)
+
+```
+# dimension of the dataset
+```{r}
+
+dim(NY_business)
+```
+#how many nas in my dataset before including nas in blank spot
+
+```{r}
+
+sum(is.na(NY_business))/prod(dim(NY_business))
+
+```
+
+```{r}
+NY_business[NY_business==""] <- NA
+```
+
+#Data exploration
+```{r}
+library(ggplot2)
+NY_business$License.Type<-as.factor(NY_business$License.Type)
+NY_business$License.Status<-as.factor(NY_business$License.Status)
+NY_business$Industry<-as.factor(NY_business$Industry)
+NY_business$Business.Name<-as.factor(NY_business$Business.Name)
+NY_business$Business.Name.2<-as.factor(NY_business$Business.Name.2)
+NY_business$Address.Building<-as.factor(NY_business$Address.Building)
+NY_business$Address.Street.Name<-as.factor(NY_business$Address.Street.Name)
+NY_business$Secondary.Address.Street.Name<-as.factor(NY_business$Secondary.Address.Street.Name)
+NY_business$Address.City<-as.factor(NY_business$Address.City)
+NY_business$Address.State <-as.factor(NY_business$Address.State)
+NY_business$Address.ZIP<-as.factor(NY_business$Address.ZIP)
+NY_business$Contact.Phone.Number<-as.factor(NY_business$Contact.Phone.Number)
+NY_business$Address.Borough <-as.factor(NY_business$Address.Borough )
+NY_business$NTA <-as.factor(NY_business$NTA)
+NY_business$Detail <-as.factor(NY_business$ Detail)
+NY_business$BBL<-as.factor(NY_business$BBL)
+NY_business$Location<-as.factor(NY_business$Location)
+NY_business$Contact.Phone.Numberr<-as.factor(NY_business$Contact.Phone.Number)
+
+
+```
+
+
+
+#new nas ratio
+```{r}
+
+#plotting-visualization
+plot(NY_business$License.Status)
+plot(NY_business$Contact.Phone.Number)
+plot(NY_business$Address.Borough)
+plot(NY_business$NTA)
+plot(NY_business$Detail)
+plot(NY_business$BBL)
+plot(NY_business$License.Type)
+plot(NY_business$Industry)
+plot(NY_business$Business.Name)
+plot(NY_business$Business.Name.2)
+plot(NY_business$Address.Building)
+plot(NY_business$Address.Street.Name)
+plot(NY_business$Secondary.Address.Street.Name)
+plot(NY_business$Address.City)
+plot(NY_business$Address.State)
+plot(NY_business$Address.ZIP)
+plot(NY_business$Contact.Phone.Number)
+plot(NY_business$Address.Borough)
+plot(NY_business$NTA)
+plot(NY_business$Detail)
+```
+
+```{r}
+
+##CLEANING MY DATA## 
+#filling all blank cells with nas
+
+
+NY_business[NY_business==""] <- NA
+```
+
+```{r}
+
+sum(is.na(NY_business))/prod(dim(NY_business))
+
+```
+
+
+
+#removing dashes to phone number
+```{r}
+NY_business$Contact.Phone.Number <- gsub("-", "",NY_business$Contact.Phone.Number)
+```
+#looking how many nas in my dataset
+```{r}
+
+colSums(is.na(NY_business))
+```
+
+#creating new variables
+
+```{r}
+
+
+
+#creating date underanother format for date attributes
+
+NY_business$License.Creation.Date <- mdy(NY_business$License.Creation.Date)
+NY_business$License.Expiration.Date<- mdy(NY_business$License.Expiration.Date)
+```
+
+class(NY_business$License.Creation.Date)
+class(NY_business$License.Expiration.Date)
+
+
+```{r}
+
+
+NY_business$License.Creation.Date2 <- format(as.Date(NY_business$License.Creation.Date, format="%m/%d/%Y"),"%Y")
+
+NY_business$License.Expiration.Date2 <- format(as.Date(NY_business$License.Expiration.Date, format="%m/%d/%Y"),"%Y")
+
+NY_business$License.Type<-as.factor(NY_business$License.Type)
+NY_business$License.Creation.Date2 <- as.factor(NY_business$License.Creation.Date2)
+NY_business$License.Expiration.Date2<- as.factor(NY_business$License.Expiration.Date2)
+
+```
+
+
+
+
+
+#calculating nas ratio considering we have added the new 2 column
+
+
+```{r}
+
+sum (is.na(NY_business))/prod(dim(NY_business))
+
+```
+
+
+#Data exploration removing colums that have more than 50% nas to lower biais
+```{r}
+NY_business1<-NY_business[, colMeans(is.na(NY_business)) <= .50] 
+
+```
+```{r}
+#listing names of variable
+names(NY_business1)
+```
+```{r}
+#reviewing the str of my data
+str(NY_business1)
+```
+## My data Exploration
+
+```{r}
+
+
+```
+
+```{r}
+str(NY_business1)
+```
+
+
+
+```{r}
+#example of names categorical class for Industry could have been done for each one of the categorical variable
+NY_business1$Industry<-as.factor(NY_business1$Industry)
+levels(NY_business1$Industry)
+table(NY_business1$Industry)
+
+```
+```{r}
+#frequency table of all my variables instead, frequency calculator was done also but had issues
+lapply(NY_business1, function(x) data.frame(table(x)))
+```
+```{r}
+
+##reducing the level of the factor  attributes based on frequency and number wanted
+
+top10 <-c("Home Improvement Salesperson","Home Improvement Contractor","Tobacco Retail Dealer","Secondhand Dealer - General"   ,"Electronics Store" , "Sightseeing Guide", "Tow Truck Driver","Laundries","top Line Stand","General Vendor" )  
+levels(NY_business1$Industry)[which(!levels(NY_business1$Industry)%in%top10)] <- "other"
+table(NY_business1$Industry)
+
+```
+
+```{r}
+str(NY_business1)
+```
+
+
+#changing the type of the wrongfully imputing variables
+```{r}
+
+Council.District<-as.numeric(NY_business1$Census.Tract)
+NY_business$Community.Board<-as.numeric(NY_business$Community.Board)
+NY_business1$Address.State<-as.factor(NY_business1$Address.State)
+NY_business1$Borough.Code <-as.factor(NY_business1$Borough.Code )
+NY_business1$Council.District<-as.numeric(NY_business1$Council.District)
+NY_business1$Contact.Phone.Number<-as.factor(NY_business1$Contact.Phone.Number)
+NY_business1$Borough.Code<-as.numeric(NY_business1$Borough.Code)
+NY_business1$Community.Board<-as.numeric(NY_business1$Community.Board)
+NY_business$Address.Building<-as.factor(NY_business$Address.Building)
+hist(NY_business$Community.Board , main="community board", xlab="address", col="blue")
+```
+
+```{r}
+
+
+
+#right skewed/ left skewed or not
+
+
+#right skewed
+hist(NY_business$Council.District, main="Address building", xlab="address", col="blue")
+
+#right skewed
+hist(NY_business$Borough.Code , main="Address building", xlab="address", col="blue")
+
+#right skewed
+hist(NY_business$BIN, main="bin", xlab="address", col="blue")
+
+# right skewed
+hist(NY_business$Census.Tract , main="census tract", xlab="address", col="blue")
+
+#left skewed
+hist(NY_business$Longitude , main="Longitude", xlab="address", col="blue")
+
+#left skewed
+hist(NY_business$Latitude , main="Latitude", xlab="address", col="blue")
+
+#right skewed
+hist(NY_business$Community.Board , main="community board", xlab="address", col="blue")
+```
+
+# still reducing the level of the categorical attributes that have too many levels
+#droping some, collapsing some
+```{r}
+#address city of business
+str(NY_business1$Address.city)
+top3<-c("NEW YORK", "BRONX", "BROOKLYN", "JAMAICA", "STATEN ISLAND" )  
+levels(NY_business1$Address.City)[which(!levels(NY_business1$Address.City)%in%top3)] <- "other"
+NY_business1$Address.State
+```
+
+```{r}
+
+#new york or others states. if there is any not within they will be with others
+top55 <-c("NY","NJ" )  
+levels(NY_business1$Address.State)[which(!levels(NY_business1$Address.State)%in%top55)] <- "other"
+NY_business1$Address.State
+```
+
+```{r}
+#top 5 zip code
+
+top9<-c("11385","11214","11220","11368","11218" )  
+levels(NY_business1$Address.ZIP)[which(!levels(NY_business1$Address.ZIP)%in%top9)] <- "other"
+
+```
+
+```{r}
+#top 4 area og ny city
+
+
+top5 <-c("Brooklyn","Queens","Manhattan", "Bronx" )  
+levels(NY_business1$Address.Borough)[which(!levels(NY_business1$Address.Borough)%in%top5)] <- "other"
+
+```
+#making sure my classes were modified
+```{r}
+str(NY_business1)
+
+NY_business1$Contact.Phone.Number<-as.factor(NY_business1$Contact.Phone.Number)
+
+```
+
+```{r}
+
+```
+# putting my new dates variables as factors
+```{r}
+NY_business1$License.Creation.Date2<-as.factor(NY_business1$License.Creation.Date2)
+
+NY_business1$License.Expiration.Date2<-as.factor(NY_business1$License.Expiration.Date2)
+```
+
+```{r}
+str(NY_business1)
+```
+```{r}
+# removing any variables that has more than 32 classes for various reason one is to reduce biais`{r}
+
+factor32 <- sapply(NY_business1, function(x) class(x) == "factor" & nlevels(x) > 32)
+NY_business2 <- NY_business1[, !factor32]
+str(NY_business2)
+```
+
+```{r}
+
+#removing column that has more than 50% missing
+NY_business3<-NY_business2[, colMeans(is.na(NY_business2)) <= .50] 
+str(NY_business3)
+```
+
+```{r}
+#Normalizing my numeric variables
+
+NY_business3$BIN<-(floor(log1p(NY_business3$BIN)))
+hist(NY_business3$BIN, min="census",xlab="cen", col = "green")
+boxplot(NY_business3$BIN, min="census",xlab="cen", col = "green")
+
+
+##lognorm
+NY_business3$Council.District<-(floor(log1p(NY_business3$Council.District)))
+hist(NY_business3$Council.District, min="census",xlab="cen", col = "green")
+boxplot(NY_business3$Council.District, min="census",xlab="cen", col = "green")
+
+boxplot(NY_business3$Community.Board, min="census",xlab="cen", col = "green")
+##lognorm
+NY_business3$Community.Board<-(floor(log1p(NY_business3$Community.Board)))
+hist(NY_business3$Community.Board,main="log normal", xlab="name")
+boxplot(NY_business3$Community.Board, min="census",xlab="cen", col = "green")
+
+
+NY_business3$Borough.Code<-(floor(log1p(NY_business3$Borough.Code)))
+hist(NY_business3$Borough.Code,main="log normal", xlab="name")
+
+
+NY_business3$Latitude<-(floor(log1p(NY_business3$Latitude)))
+hist(NY_business3$Latitude,main="log normal", xlab="name")
+
+NY_business3$Longitude<-(floor(log1p(NY_business3$Longitude)))
+
+
+```
+
+```{r}
+
+# we found 2 similar rows identified duplicate rows
+filter(NY_business3,DCA.License.Number=="1374839-DCA")
+filter(NY_business3,DCA.License.Number=="2003600-DCA")
+NY_data <- subset(NY_business3, !duplicated(NY_business2[,1]))
+
+```
+
+```{r}
+
+str(NY_data)
+```
+
+```{r}
+
+#new dataset vreated without 3  columns considered useless
+
+
+NY_businessfinal<-subset(NY_data,select= -c(DCA.License.Number,License.Expiration.Date,License.Creation.Date, Longitude))
+
+```
+#name of remaining variables
+```{r}
+
+str(NY_businessfinal)
+names(NY_businessfinal)
+summary(NY_businessfinal)
+```
+#creating the right type of variables
+```{r}
+
+```
+# how many nas left in my dataset
+```{r}
+
+colSums(is.na(NY_businessfinal))
+
+
+```
+percentage of my best selectors in my finanl dataset
+```{r}
+
+#seletors attributes based on percentage 
+library(FSelectorRcpp)
+Irisx<-NY_businessfinal[-2]
+y<-NY_businessfinal$License.Status
+information_gain(x=Irisx,y=y)
+```
+# we want to keep the top 70% percentile of my attributes what are they
+```{r}
+
+#top above 30% quantile attributes
+
+x <- information_gain(License.Status ~ ., NY_businessfinal)
+cut_attrs(attrs = x)
+to_formula (cut_attrs(attrs = x), "License.status")
+cut_attrs(attrs = x, k = 0.30)
+```
+
+```{r}
+
+
+#based on my Fselector Rcpp i created my new 
+library(plyr)
+
+New_business5<-subset (NY_businessfinal, select= c(License.Status,License.Expiration.Date2, License.Creation.Date2, Industry,  BIN))
+
+```
+
+```{r}
+#dimension of new dataset
+dim(New_business5)
+```
+
+```{r}
+
+str(New_business5)
+```
+#Creation of table with missing values
+```{r}
+
+#table showing number of all missing values
+md.pattern(New_business5)
+```
+
+```{r}
+
+#graph showing missing data ploting and percentage
+
+mice_plot <- aggr(New_business5, col=c('navyblue','yellow'),
+numbers=TRUE, sortVars=TRUE,
+labels=names(New_business5), cex.axis=.7,
+gap=3, ylab=c("Missing data","Pattern"))
+
+```
+
+```{r}
+New_business5$License.Expiration.Date2<-as.factor(New_business5$License.Expiration.Date2)
+New_business5$License.Creation.Date2<-as.factor(New_business5$License.Creation.Date2)
+New_business5$Industry<-as.factor(New_business5$Industry)
+New_business5$BIN<-as.numeric(New_business5$BIN)
+str(New_business5)
+```
+```{r}
+
+
+#imputing missing values for categorical and numerical values by pairs
+md.pairs(New_business5)
+```
+#Plot of missing nas
+```{r}
+
+pbox(New_business5,pos=1, int= FALSE, cex=0.7)
+
+```
+
+```{r}
+
+
+#my Wayi for mputation of my missing values  in 3 of the attributes randomly
+library(Hmisc)
+
+
+New_business5$License.Expiration.Date2 <- with(New_business5, impute(License.Expiration.Date2, 'random'))
+New_business5$BIN<- with(New_business5, impute(BIN , 'random'))
+
+```
+
+```{r}
+
+#validating that there is no other nas or blank cells
+
+colSums(is.na(New_business5))
+
+str(New_business5)
+```
+
+```{r}
+
+#Model inspection##
+
+##########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#creating training set
+
+train_index <- sample(1:nrow(New_business5), 0.8 * nrow(New_business5))
+
+
+
+X_train <- New_business5[train_index, ]
+x_test <- New_business5[-train_index, ]
+
+#lets remove the response variable
+
+business_train_new <- X_train[-1]
+business_test_new <- x_test[-1]
+
+business_train_label<- X_train$License.status
+business_test_label<- x_test$License.status
+
+#table trainset
+#
+prop.table(table(business_train_label))
+
+#table testset
+prop.table(table(business_test_label))
+
+```
+#Decision tree plot
+```{r}
+
+#*****************@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Decsision tree
+#Building decision tree model more than 2 minutes  to get it done
+#decision tree require a little data preparation in particular require no scaling or centering started at 8:11am-
+
+                 
+set.seed(123)
+library(caret)
+library(rpart)
+library(rpart.plot)
+train_control<- trainControl(method="cv", number=c)
+
+# train the model 
+model<- train(License.Status~., data=X_train, trControl=train_control, method="rpart")
+
+predictions<- predict(model,X_train)
+
+
+
+fit <- rpart (License.Status~., data =X_train, method = 'class')
+rpart.plot(fit, type=5,extra = 101)
+
+```
+
+```{r}
+
+#predict result with test set
+predict_unseen <-predict(fit, x_test, type = 'class')
+table_mat <- table(x_test$License.Status, predict_unseen)
+table_mat
+```
+
+```{r}
+
+#accuracy table
+accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
+
+```
+
+```{r}
+
+#print the accuracy test
+print(paste('Accuracy for test', accuracy_Test))
+```
+
+```{r}
+
+predict_unseen1 <-predict(fit, X_train, type = 'class')
+
+table_mat <- table(X_train$License.Status, predict_unseen1)
+table_mat
+```
+
+```{r}
+
+#accuracy table
+accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
+```
+
+```{r}
+
+#print the accuracy test
+print(paste('Accuracy for train', accuracy_Test))
+
+```
+
+```{r}
+
+
+#tune accuracy
+accuracy_tune <- function(fit) {
+  predict_unseen <- predict(fit, x_test, type = 'class')
+  table_mat <- table(x_test$License.Status, predict_unseen)
+  accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
+  accuracy_Test
+}
+
+```
+
+```{r}
+
+#modifying controle to increase accracy yes it was increase
+control <- rpart.control(minsplit = 5,
+                         minbucket = round(5 / 3),
+                         maxdepth = 3,
+                         cp = 0)
+tune_fit <- rpart(License.Status~., data = X_train, method = 'class', control = control)
+accuracy_tune(tune_fit)
+
+```
+
+```{r}
+
+#confusion matrix decision tree
+caret::confusionMatrix(table_mat,License.Status="active")
+
+
+```
+
+
+```{r}
+
+# area under the curve
+library(pROC)
+predict_unseenprob<-predict(tune_fit, x_test, type="prob")
+auc<-auc(x_test$License.Status, predict_unseenprob[,2])
+```
+```{r}
+#probability of each occurence
+
+predict_unseenprob
+```
+
+```{r}
+
+#plot under the curve
+#predict_unseenprob
+```
+
+
+
+```{r}
+#area under the curve
+
+plot(roc(x_test$License.Status, predict_unseenprob[,2]))
+```
+
+
+
+
+```{r}
+
+#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ predictive modeling using Random Forest
+library(caTools)
+library(randomForest)
+ind = sample.split(Y=New_business5$License.Status, SplitRatio=0.7)
+trainDF<- New_business5[ind,]
+testDF<- New_business5[-ind,]
+
+```
+
+```{r}
+#random Forest with 
+set.seed(17)
+modelRandom<-randomForest(License.Status~., data=trainDF, mtry = 2, ntree = 20)
+modelRandom
+```
+
+```{r}
+
+#Plotting the importance of each variables
+#means means how much accurancy decreace if we drop the variable
+#high mean decrease Gini score
+
+#graphing the importance
+
+importance(modelRandom)
+
+```
+```{r}
+#plotting the importance
+#Licencen creation is the most important for the prediction
+varImpPlot(modelRandom)
+```
+
+```{r}
+
+#Prediction of test
+PredictionWithClass<-predict(modelRandom,testDF, type='class')
+t<- table (predictions=PredictionWithClass,actual=testDF$License.Status)
+```
+```{r}
+#table t
+t
+```
+```{r}
+#prediction train
+
+PredictionWithClass<-predict(modelRandom,trainDF, type='class')
+t<- table (predictions=PredictionWithClass,actual=trainDF$License.Status)
+```
+```{r}
+#table for train
+t
+
+```
+
+```{r}
+#creation of prediction
+#Licencen creation is the most important for the prediction
+varImpPlot(modelRandom)
+```
+
+```{r}
+
+#table creation
+
+```
+
+```{r}
+
+#accuracy metrics
+sum(diag(t))/sum(t)
+```
+
+```{r}
+
+#plotting ROc and caculaing roc
+library(pROC)
+#giving us the probability of each class
+PredictionsWithprob<- predict(modelRandom, testDF, type="prob")
+```
+```{r}
+
+#area under the curve is good
+uca<-auc(testDF$License.Status,PredictionsWithprob[,2])
+
+```
+```{r}
+PredictionsWithprob
+```
+
+```{r}
+#area under the curve
+set.seed(17)
+uca
+```
+```{r}
+#plot Curve
+
+plot(roc(testDF$License.Status,PredictionsWithprob[,2]))
+```
+
+# prediction of test
+```{r}
+set.seed(124)
+#finfing the best mtry, close to square root in our case it is 2 in the sample
+bestmtry<-tuneRF(trainDF,trainDF$License.Status,ntreeTry = 20,stepFactor = 1.2, improve = 0.01, trace = T, plot = T)
+
+rfPredict <- predict(modelRandom,newdata = testDF)
+confusionMatrix(rfPredict, testDF$License.Status )
+
+```
+
+```{r}
+##################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#logistic regression with caret
+
+mod_fit <- train(License.Status~.,data=trainDF, method="glm", family="binomial")
+
+
+```
+
+```{r}
+# has created asomes dummies variables in order topredict with logictic regression factor cannot be predictable without dummies variables
+
+exp(coef(mod_fit$finalModel))
+
+
+```
+```{r}
+# predict results
+predict(mod_fit, newdata=trainDF)
+
+```
+```{r}
+# percentage prediction
+
+predict(mod_fit, newdata=trainDF, type="prob")
+```
+
+
+```{r}
+
+#variable importance with logistic regression
+varImp(mod_fit)
+```
+
+```{r}
+
+#table prediction with testset
+pred = predict(mod_fit, newdata=testDF)
+accuracy<-table (pred, actual=(testDF$License.Status))
+```
+```{r}
+#accuracy
+accuracy
+```
+
+```{r}
+
+#confusion matrix
+
+confusionMatrix(data=pred, testDF$License.Status)
+```
+
+```{r}
+
+#giving us the probability of each class
+PredictionsWithprob<- predict(mod_fit, testDF, type="prob")
+```
+
+```{r}
+
+#area under the curve is good
+uca<-auc(testDF$License.Status,PredictionsWithprob[,2])
+plot(roc(testDF$License.Status,PredictionsWithprob[,2]))
+```
+
+```{r}
+#area under the curve
+auc
+
+```
+
+```{r}
+#graph the area under the curve
+
+plot(roc(testDF$License.Status,PredictionsWithprob[,2]))
+
+
+```
+
+```{r}
+#bagging
+
+
+
+control <- trainControl(method="repeatedcv", number=5, repeats=3)
+seed <- 7
+
+
+
+metric <- "Accuracy"
+# Random Forest this ppredictive model is bagging already
+#set.seed(seed)
+#fit.rf <- train(License.Status~., data=testDF, method="rf", metric=metric, trControl=control)
+
+# summarize results
+
+bagging_results <- resamples(list(rpart=fit.treebag, glm=fit.glm))
+summary(bagging_results)
+dotplot(bagging_results)
+
+```
+
+```{r}
+#find the names
+
+names(getModelInfo())
+```
+```{r}
+
+names(getModelInfo())
+
+```
+```{r}
+#bagging decision tree
+# Bagged CART
+set.seed(seed)
+fit.treebag <- train(License.Status~., data=testDF, method="rpart", metric=metric, trControl=control)
+```
+```{r}
+#Logistic Regression
+set.seed(seed)
+fit.glm<- train(License.Status~., data=testDF, method="glm", metric=metric, trControl=control)
+```
+```{r}
+# summarize results
+bagging_results <- resamples(list(rpart=fit.treebag, glm=fit.glm))
+bagging_results
+```
+
+```{r}
+
+summary(bagging_results)
+```
+```{r}
+
+dotplot(bagging_results)
+```
+
